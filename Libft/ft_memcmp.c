@@ -1,40 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   ft_memcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pedmonte <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/14 11:33:23 by pedmonte          #+#    #+#             */
-/*   Updated: 2023/04/24 12:13:16 by pedmonte         ###   ########.fr       */
+/*   Created: 2023/04/18 17:51:58 by pedmonte          #+#    #+#             */
+/*   Updated: 2023/04/24 12:19:27 by pedmonte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// memset() is used to fill a block of memory with a particular value.
 #include "libft.h"
 #include <stdio.h>
 
-void	*ft_memset(void *s, int c, size_t n)
+int	ft_memcmp(const void *s1, const void *s2, size_t n)
 {
-	size_t	i;
+	int	i;
 
 	i = 0;
-	while (i < n)
+	while (n != 0)
 	{
-		((unsigned char *)s)[i] = (unsigned char)c;
+		if (((unsigned char *)s1)[i] != ((unsigned char *)s2)[i])
+			return (((unsigned char *)s1)[i] - ((unsigned char *)s2)[i]);
+		n--;
 		i++;
 	}
-	return (s);
+	return (0);
 }
 /*
 int main()
 {
-    char str[50] = "GeeksForGeeks is for programming geeks.";
-    printf("\nBefore ft_memset(): %s\n", str);
-
-    // Fill 8 characters starting from str[13] with '.'
-    ft_memset(str + 13, '.', 8*sizeof(char));
-
-    printf("After ft_memset():  %s", str);
-    return 0;
-}*/
+	char s1[10] = "Escola";
+	char s2[10] = "Escola";
+	
+	printf("%d", ft_memcmp(s1, s2, 9));
+	return (0);
+}
+*/

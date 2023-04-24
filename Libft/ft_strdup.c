@@ -1,40 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pedmonte <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/14 11:33:23 by pedmonte          #+#    #+#             */
-/*   Updated: 2023/04/24 12:13:16 by pedmonte         ###   ########.fr       */
+/*   Created: 2023/04/19 16:27:02 by pedmonte          #+#    #+#             */
+/*   Updated: 2023/04/19 17:02:51 by pedmonte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// memset() is used to fill a block of memory with a particular value.
 #include "libft.h"
 #include <stdio.h>
 
-void	*ft_memset(void *s, int c, size_t n)
+char	*ft_strdup(const char *s)
 {
-	size_t	i;
+	char	*res;
+	size_t	size;
+	int		i;
 
+	size = 0;
 	i = 0;
-	while (i < n)
+	while (s[size])
+		size++;
+	res = (char *)malloc((size + 1) * sizeof(char));
+	while (i < (int)size)
 	{
-		((unsigned char *)s)[i] = (unsigned char)c;
+		res[i] = s[i];
 		i++;
 	}
-	return (s);
+	res[i] = '\0';
+	return (res);
 }
 /*
 int main()
 {
-    char str[50] = "GeeksForGeeks is for programming geeks.";
-    printf("\nBefore ft_memset(): %s\n", str);
+    char source[] = "GeeksForGeeks";
 
-    // Fill 8 characters starting from str[13] with '.'
-    ft_memset(str + 13, '.', 8*sizeof(char));
+    // A copy of source is created dynamically
+    // and pointer to copy is returned.
+    char* target = ft_strdup(source);
 
-    printf("After ft_memset():  %s", str);
+    printf("%s", target);
     return 0;
 }*/

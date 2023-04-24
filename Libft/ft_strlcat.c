@@ -1,40 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pedmonte <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/14 11:33:23 by pedmonte          #+#    #+#             */
-/*   Updated: 2023/04/24 12:13:16 by pedmonte         ###   ########.fr       */
+/*   Created: 2023/04/18 15:07:18 by pedmonte          #+#    #+#             */
+/*   Updated: 2023/04/24 12:20:29 by pedmonte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// memset() is used to fill a block of memory with a particular value.
 #include "libft.h"
 #include <stdio.h>
+#include <string.h>
 
-void	*ft_memset(void *s, int c, size_t n)
+size_t	ft_strlcat(char *dst, const char *src, size_t size)
 {
 	size_t	i;
+	size_t	src_length;
+	size_t	dst_length;
 
+	dst_length = ft_strlen(dst);
+	src_length = ft_strlen(src);
 	i = 0;
-	while (i < n)
-	{
-		((unsigned char *)s)[i] = (unsigned char)c;
+	if (size <= dst_length)
+		return (src_length + size);
+	while (dst[i] != '\0' && i < size - 1)
 		i++;
+	while (i < size - 1 && *src)
+	{
+		dst[i] = *src;
+		i++;
+		src++;
 	}
-	return (s);
+	dst[i] = '\0';
+	return (dst_length + src_length);
 }
-/*
-int main()
-{
-    char str[50] = "GeeksForGeeks is for programming geeks.";
-    printf("\nBefore ft_memset(): %s\n", str);
-
-    // Fill 8 characters starting from str[13] with '.'
-    ft_memset(str + 13, '.', 8*sizeof(char));
-
-    printf("After ft_memset():  %s", str);
-    return 0;
-}*/

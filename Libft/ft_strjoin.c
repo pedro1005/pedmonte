@@ -1,40 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pedmonte <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/14 11:33:23 by pedmonte          #+#    #+#             */
-/*   Updated: 2023/04/24 12:13:16 by pedmonte         ###   ########.fr       */
+/*   Created: 2023/04/24 15:39:02 by pedmonte          #+#    #+#             */
+/*   Updated: 2023/04/24 16:33:23 by pedmonte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// memset() is used to fill a block of memory with a particular value.
 #include "libft.h"
-#include <stdio.h>
 
-void	*ft_memset(void *s, int c, size_t n)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
+	char	*res;
+	size_t	len;
 	size_t	i;
+	int		j;
 
 	i = 0;
-	while (i < n)
+	j = 0;
+	len = ft_strlen(s1) + ft_strlen(s2) + 1;
+	res = (char *)malloc(sizeof(char) * len);
+	if (!res)
+		return (NULL);
+	while (s1[i] && i < len)
 	{
-		((unsigned char *)s)[i] = (unsigned char)c;
+		res[i] = s1[i];
 		i++;
 	}
-	return (s);
+	while (s2[j] && i < len)
+	{
+		res[i] = s2[j];
+		i++;
+		j++;
+	}
+	res[i] = 0;
+	return (res);
 }
 /*
 int main()
 {
-    char str[50] = "GeeksForGeeks is for programming geeks.";
-    printf("\nBefore ft_memset(): %s\n", str);
-
-    // Fill 8 characters starting from str[13] with '.'
-    ft_memset(str + 13, '.', 8*sizeof(char));
-
-    printf("After ft_memset():  %s", str);
-    return 0;
+	printf("%s", ft_strjoin("Ola ", "Mundo!"));
+	return (0);
 }*/

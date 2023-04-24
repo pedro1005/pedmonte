@@ -1,40 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pedmonte <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/14 11:33:23 by pedmonte          #+#    #+#             */
-/*   Updated: 2023/04/24 12:13:16 by pedmonte         ###   ########.fr       */
+/*   Created: 2023/04/18 16:40:45 by pedmonte          #+#    #+#             */
+/*   Updated: 2023/04/24 12:17:40 by pedmonte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// memset() is used to fill a block of memory with a particular value.
 #include "libft.h"
 #include <stdio.h>
 
-void	*ft_memset(void *s, int c, size_t n)
+void	*ft_memchr(const void *s, int c, size_t n)
 {
-	size_t	i;
+	int	i;
 
 	i = 0;
-	while (i < n)
+	while (((char *)s)[i] && n > 0)
 	{
-		((unsigned char *)s)[i] = (unsigned char)c;
+		if (((char *)s)[i] == (char)c)
+			return ((unsigned char *)s + i);
 		i++;
+		n--;
 	}
-	return (s);
+	return (0);
 }
 /*
 int main()
 {
-    char str[50] = "GeeksForGeeks is for programming geeks.";
-    printf("\nBefore ft_memset(): %s\n", str);
-
-    // Fill 8 characters starting from str[13] with '.'
-    ft_memset(str + 13, '.', 8*sizeof(char));
-
-    printf("After ft_memset():  %s", str);
-    return 0;
-}*/
+	char *s;
+	s = "Escola42";
+	printf("%s", (char *)ft_memchr(s, 'a', 5));
+	return (0);
+}
+*/

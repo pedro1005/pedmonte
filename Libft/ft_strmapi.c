@@ -1,42 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strtrim.c                                       :+:      :+:    :+:   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pedmonte <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/24 16:34:35 by pedmonte          #+#    #+#             */
-/*   Updated: 2023/04/25 10:34:54 by pedmonte         ###   ########.fr       */
+/*   Created: 2023/04/25 12:29:04 by pedmonte          #+#    #+#             */
+/*   Updated: 2023/04/25 12:53:45 by pedmonte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strtrim(char const *s1, char const *set)
+char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {
-	int		start;
-	int		end;
-	char	*str;
+	unsigned int	i;
+	char			*res;
 
-	if (!s1 || !set)
+	if (!s)
 		return (NULL);
-	start = 0;
-	end = ft_strlen(s1) - 1;
-	while (ft_strchr(set, s1[start]) && start <= end)
-		start++;
-	if (start > end)
-		return (ft_strdup(s1 + end + 1));
-	while (ft_strchr(set, s1[end]) && end >= 0)
-		end--;
-	str = malloc(end - start + 2);
-	if (!str)
+	i = 0;
+	res = (char *)malloc(sizeof(char) * (ft_strlen(s)) + 1);
+	if (res == NULL)
 		return (NULL);
-	ft_strlcpy(str, (char *)&s1[start], end - start + 2);
-	return (str);
+	while (s[i])
+	{
+		res[i] = f(i, s[i]);
+		i++;
+	}
+	res[i] = '\0';
+	return (res);
 }
 /*
 int main()
 {
-	printf("%s", ft_strtrim("   Hello   ", " "));
-	return (0);
+	char my_func(unsigned int i, char str)
+	{
+ 	printf("My inner function: index = %d and %c\n", i, str);
+ 	return str - 32;
+	}
+	char	*s;
+	s = "aaaAAaaabbBBBbb";
+	printf("%s", ft_strmapi(s, my_func));
+	return(0);
 }*/

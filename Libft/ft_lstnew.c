@@ -1,31 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr.c                                        :+:      :+:    :+:   */
+/*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pedmonte <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/15 15:14:48 by pedmonte          #+#    #+#             */
-/*   Updated: 2023/03/15 15:15:10 by pedmonte         ###   ########.fr       */
+/*   Created: 2023/04/25 15:20:50 by pedmonte          #+#    #+#             */
+/*   Updated: 2023/04/25 16:51:54 by pedmonte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
+#include "libft.h"
 
-void	ft_putstr(char *str)
+t_list *ft_lstnew(void *content)
 {
-	int	i;
+	t_list	*res;
 
-	i = 0;
-	while (str[i] != '\0')
-	{
-		write (1, &str[i], 1);
-		i++;
-	}	
+	res = (t_list*)malloc(sizeof(*res));
+	if (!res)
+		return (NULL);
+	res->content = content;
+	res->next = NULL;
+	return (res);
 }
 /*
-int	main()
+int		main(void)
 {
-	char *c = "Hello 42!";
-	ft_putstr(c);
+	char	str[] = "lorem ipsum dolor sit";
+
+	t_list	*elem;
+
+	elem = ft_lstnew((void *)str);
+	printf("\n%p\n", elem->content);
 }*/

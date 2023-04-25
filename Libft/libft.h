@@ -73,6 +73,7 @@ int					get_next_line(int fd, char **line);
 int					is_newline(char *backup);
 int					split_line(char **backup, char **line, int cut_idx);
 int					return_all(char **backup, char **line, int read_size);
+void	ft_striteri(char *s, void (*f)(unsigned int, char*));
 
 
 #endif

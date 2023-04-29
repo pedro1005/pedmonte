@@ -6,26 +6,31 @@
 /*   By: pedmonte <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 16:40:45 by pedmonte          #+#    #+#             */
-/*   Updated: 2023/04/24 12:17:40 by pedmonte         ###   ########.fr       */
+/*   Updated: 2023/04/29 16:10:02 by pedmonte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdio.h>
 
 void	*ft_memchr(const void *s, int c, size_t n)
 {
-	int	i;
+	size_t			i;
+	unsigned char	*str;
+	unsigned char	character;
 
+	str = (unsigned char *)s;
+	character = (unsigned char)c;
 	i = 0;
-	while (((char *)s)[i] && n > 0)
+	while (i < n)
 	{
-		if (((char *)s)[i] == (char)c)
-			return ((unsigned char *)s + i);
+		if (*str == character)
+		{
+			return (str);
+		}
+		str++;
 		i++;
-		n--;
 	}
-	return (0);
+	return (NULL);
 }
 /*
 int main()

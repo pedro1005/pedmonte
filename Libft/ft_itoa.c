@@ -12,19 +12,21 @@
 
 #include "libft.h"
 
-static int	count_chars(long number)
+static long	count_chars(long number)
 {
-	int	count;
+	long	count;
 
 	count = 0;
+	if (number == 0)
+		return ((long)1);
 	if (number < 0)
 	{
-		number = number * -1;
+		number = -number;
 		count++;
 	}
 	while (number > 0)
 	{
-		number = number / 10;
+		number /= 10;
 		count++;
 	}
 	return (count);
@@ -33,27 +35,29 @@ static int	count_chars(long number)
 char	*ft_itoa(int number)
 {
 	char	*res;
-	int		n;
+	int		len;
+	int		sign;
+	long	n;
 
-	n = count_chars(number);
-	res = (char *)malloc(sizeof(char) * (n + 1));
+	n = number;
+	sign = 0;
+	if (n < 0)
+	{
+		sign = 1;
+		n = -n;
+	}
+	len = count_chars(n);
+	res = (char *)malloc(sizeof(char) * (len + sign + 1));
 	if (!res)
 		return (NULL);
-	res[n] = '\0';
-	if (number == 0)
-		return ("0");
-	if (number == -2147483648)
-		return ("-2147483648");
-	if (number < 0)
+	res[len + sign] = '\0';
+	while (len-- > 0)
 	{
+		res[len + sign] = '0' + (n % 10);
+		n /= 10;
+	}
+	if (sign)
 		res[0] = '-';
-		number = number * -1;
-	}
-	while (number > 0)
-	{
-		res[--n] = 48 + (number % 10);
-		number = number / 10;
-	}
 	return (res);
 }
 /*

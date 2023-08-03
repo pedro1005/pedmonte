@@ -1,0 +1,9 @@
+{
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/pedmonte/github/FdF",
+            "binaryPath": "/home/pedmonte/github/FdF/learn",
+            "binaryArgs": []
+        }
+    ]
+}

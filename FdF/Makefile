@@ -3,17 +3,17 @@ CC      = gcc -O2
 FLAGS  = -Wall -Wextra -Werror
 
 ### EXECUTABLE ###
-NAME   = learn
+NAME   = fdf
 
 ### INCLUDES ###
 #LIBFT  = libft
 OBJ_PATH  = objs
 HEADER = include
-SRC_PATH  = learning
+SRC_PATH  = src
 MLX = mlx
 
 ### SOURCE FILES ###
-SOURCES = learn.c
+SOURCES = main.c
 
 ### OBJECTS ###
 

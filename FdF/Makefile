@@ -1,24 +1,26 @@
 ### COMPILATION ###
-CC      = gcc -O2
+CC      = cc -O2 -g
 FLAGS  = -Wall -Wextra -Werror
+CPPFLAGS = -I./libft/includes -I/usr/X11/include
 
 ### EXECUTABLE ###
 NAME   = fdf
 
 ### INCLUDES ###
-#LIBFT  = libft
+LIBFT  = libft
 OBJ_PATH  = objs
 HEADER = include
 SRC_PATH  = src
 MLX = mlx
 
 ### SOURCE FILES ###
-SOURCES = main.c
+SOURCES = main.c fdf_utils.c
 
 ### OBJECTS ###
 
 SRCS = $(addprefix $(SRC_PATH)/,$(SOURCES))
 OBJS = $(addprefix $(OBJ_PATH)/,$(SOURCES:.c=.o))
+
 
 ### COLORS ###
 NOC         = \033[0m
@@ -39,30 +41,30 @@ all: lib tmp $(NAME)
 
 lib:
 	@echo "$(GREEN)Creating lib files$(CYAN)"
-#	@make -C $(LIBFT)
+	@make -C $(LIBFT)
 	@make -C $(MLX)
 
 $(NAME): $(OBJS)
-	$(CC) $(FLAGS) -L $(MLX) -o $@ $^ -lmlx -lXext -lX11 -lm
+	$(CC) $(FLAGS) -L $(MLX) -L $(LIBFT) -o $@ $^ -lft -lmlx -lXext -lX11 -lm -fPIE
 	@echo "$(GREEN)Project successfully compiled"
-#-L $(LIBFT)
+
 tmp:
 	@mkdir -p objs
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c $(HEADER)/$(NAME).h
-	@$(CC) $(FLAGS) -c -o $@ $<
+	@$(CC) $(FLAGS) $(CPPFLAGS) -c -o $@ $<
 	@echo "$(BLUE)Creating object file -> $(WHITE)$(notdir $@)... $(RED)[Done]$(NOC)"
 
 clean:
 	@echo "$(GREEN)Supressing libraries files$(CYAN)"
-#	@make clean -C $(LIBFT)
+	@make clean -C $(LIBFT)
 	@rm -rf $(OBJ_PATH)
 
 fclean:
 	@echo "$(GREEN)Supressing libraries files$(CYAN)"
 	@rm -rf $(OBJ_PATH)
 	@rm -f $(NAME)
-#	@make fclean -C $(LIBFT)
+	@make fclean -C $(LIBFT)
 
 re: fclean
 	@$(MAKE) all -j

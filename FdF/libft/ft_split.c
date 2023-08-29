@@ -12,83 +12,73 @@
 
 #include "libft.h"
 
-int	count_words(const char *str, char c)
+static int	ft_count_word(char const *s, char c)
 {
-	int	i;
-	int	trigger;
+	int i;
+	int word;
 
 	i = 0;
-	trigger = 0;
-	while (*str)
+	word = 0;
+	while (s && s[i])
 	{
-		if (*str != c && trigger == 0)
+		if (s[i] != c)
 		{
-			trigger = 1;
-			i++;
+			word++;
+			while (s[i] != c && s[i])
+				i++;
 		}
-		else if (*str == c)
-			trigger = 0;
-		str++;
-	}
-	return (i);
-}
-
-// Função que cria uma cópia de uma palavra numa nova string
-char	*word_dup(const char *str, int start, int finish)
-{
-	char	*word;
-	int		i;
-
-	i = 0;
-	word = malloc((finish - start + 1) * sizeof(char));
-	if (word == NULL)
-		return (NULL);
-	while (start < finish)
-		word[i++] = str[start++];
-	word[i] = '\0';
-	if (word == NULL) {
-    	free(word); // Free allocated memory before returning NULL
-    	return (NULL);
+		else
+			i++;
 	}
 	return (word);
 }
 
-char	**ft_split(char const *s, char c)
+static int	ft_size_word(char const *s, char c, int i)
 {
-	size_t	i;
-	size_t	j;
-	int		index;
-	char	**split;
+	int	size;
 
-	split = malloc((count_words(s, c) + 1) * sizeof(char *));
-	if (!s || !split)
+	size = 0;
+	while (s[i] != c && s[i])
 	{
-		if (split)
-			free(split);
-		return (0);
-	}
-	i = 0;
-	j = 0;
-	index = -1;
-	while (i <= ft_strlen(s))
-	{
-		if (s[i] != c && index < 0)
-			index = i;
-		else if ((s[i] == c || i == ft_strlen(s)) && index >= 0)
-		{
-			split[j++] = word_dup(s, index, i);
-			index = -1;
-			
-		}
+		size++;
 		i++;
 	}
-	split[j] = 0;
-	return (split);
+	return (size);
 }
-/*
-int main()
+
+static void	ft_free(char **strs, int j)
 {
-	printf("%s", ft_split("BAAABBAAAABAAB", 'B')[2]);
-	return (0);
-	//AAA,AAAA,AA
-}*/
+	while (j-- > 0)
+		free(strs[j]);
+	free(strs);
+}
+
+char		**ft_split(char const *s, char c)
+{
+	int		i;
+	int		word;
+	char	**strs;
+	int		size;
+	int		j;
+
+	i = 0;
+	j = -1;
+	word = ft_count_word(s, c);
+	if (!(strs = (char **)malloc((word + 1) * sizeof(char *))))
+		return (NULL);
+	while (++j < word)
+	{
+		while (s[i] == c)
+			i++;
+		size = ft_size_word(s, c, i);
+		if (!(strs[j] = ft_substr(s, i, size)))
+		{
+			ft_free(strs, j);
+			return (NULL);
+		}
+		i += size;
+	}
+	strs[j] = 0;
+	return (strs);
+}
+

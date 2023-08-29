@@ -65,12 +65,11 @@ void draw_line_to_image(DOT *a, DOT *b, char *image_buffer, int pixel_bits, int 
                 image_buffer[pixel + 2] = (color >> 16) & 0xFF;    // Red channel
                 image_buffer[pixel + 3] = (color >> 24);           // Alpha channel
             }
-        }   
+        }
 
         // Bresenham's algorithm logic
         if (x == x2 && y == y2)
         {
-            //printf("break at x: %d || y: %d\n", x, y);
             break;
         }
 
@@ -85,48 +84,45 @@ void draw_line_to_image(DOT *a, DOT *b, char *image_buffer, int pixel_bits, int 
             error += deltaX;
             y += y_i;
         }
-        //printf("a.x: %d || a.y: %d\nb.x: %d || b.y: %d\n", x, y, x2, y2);
     }
 }
 
 void size_map(int fd, MAP *map) //Atribui valores a map.width e map.heigth
 {
-    printf("test sizemap, fd =%d\n", fd); // test print
     if (fd < 0 || map == NULL)
+    {
+        free(map);
         return ;
+    }
     char    *line;
     char    **points;
     map->height = 0;
     map->width = 0;
     line = get_next_line(fd);
     if (line == NULL)
-        return ;
-    if (line != NULL)
     {
-        map->height++;
-        points = ft_split(line, ' ');
-        while (points[map->width])
-            map->width++;
-        for (int i = 0; points[i]; i++) {
-            free(points[i]);}
-        free(points);
         free(line);
+        close(fd);
+        exit(1);
     }
-    else
-        {
-            free(line);
-            close(fd);
-            return ;
-        }
+    map->height++;
+    points = ft_split(line, ' ');
+    while (points[map->width])
+        map->width++;
+    for (int i = 0; points[i]; i++) {
+        free(points[i]);}
+    free(points);
+    free(line);
     while ((line = get_next_line(fd)) != NULL)
     {
         map->height++;
         free(line);
     }
-    if ((2 * map->height) < map->width)
-        map->edge = W_WIDTH / (map->width * 2);
+    map->edge = W_WIDTH / (map->width);
     if ((2 * map->height) >= map->width)
-        map->edge = W_HEIGHT / (map->height * 4);
+        map->edge = W_HEIGHT / (map->height * 2);
+    if (map->edge < 1)
+        map->edge = 1;
     free(line);
     close(fd);
     return ;
@@ -134,9 +130,11 @@ void size_map(int fd, MAP *map) //Atribui valores a map.width e map.heigth
 
 void    read_map(MAP *map, int fd, char *filename) //Cria matriz de pontos (DOT) no map
 {
-    if (map == NULL || !fd || fd < 0)
-        //close_window(map);
+    if (map == NULL || fd < 0)
+    {
+        free(map);
         exit(1) ;
+    }
     int x;
     int y;
     float x_i;
@@ -151,17 +149,21 @@ void    read_map(MAP *map, int fd, char *filename) //Cria matriz de pontos (DOT)
     size_map(fd, map);
     printf("sizemap succed!\n");
     printf("map edge: %f\nmap widht: %d\nmap height: %d\n", map->edge, map->width, map->height); //test print
-    y_i = (float)((map->width) * map->edge);
+    y_i = (float)((map->height) * map->edge);
     if (map->height > map->width)
         y_i = (float)((map->height) * map->edge / 2);
     map->dots = (DOT **)malloc(map->height * sizeof(DOT *));
     if (map->dots == NULL)
-        return ;
+    {
+        free(map);
+        exit(1);
+    }
     for (y = 0; y < map->height; y++) {
         map->dots[y] = (DOT*)malloc(map->width * sizeof(DOT)); // Allocate memory for each row of dots
         if (map->dots[y] == NULL) {
-            free(map->dots[y]);
-            return ;
+            free(map->dots);
+            free(map);
+            exit(1);
         }
     }
     fd = open(filename, O_RDONLY); // added
@@ -169,8 +171,9 @@ void    read_map(MAP *map, int fd, char *filename) //Cria matriz de pontos (DOT)
     if (line == NULL)
     {
         close(fd);
+        free(map);
         free(line);
-        return ;
+        exit(1);
     }
     y = 0;
     while (y < map->height)
@@ -178,58 +181,55 @@ void    read_map(MAP *map, int fd, char *filename) //Cria matriz de pontos (DOT)
         x = 0; // Reset 'x' for each row of 'dots'
         word = ft_split(line, ' ');
         if (word == NULL)
-        {  
+        {
+            free(map);
             free(word);
             free(line);
-            return ;
+            close(fd);
+            exit(1);
         }
         x_i = y * map->edge;
         y_i = y_i + (map->edge / 2);
         while (x < map->width)
         {
-            //y_f = y_f +(EDGE / 2);
+            
             map->dots[y][x].pos_x = ((float)((x * map->edge))) + x_i;
             map->dots[y][x].pos_z = (float)((ft_atoi(word[x])));
             map->dots[y][x].pos_y = y_i - ((float)((x * map->edge / 2))) - (map->dots[y][x].pos_z * (map->edge / 4));
-            //printf("dots[%d][%d].x = %f\n",y, x, map->dots[y][x].pos_x);//test
-            //printf("dots[%d][%d].y = %f\n",y, x, map->dots[y][x].pos_y);//test
-            //printf("dots[%d][%d].z = %f\n",y, x, map->dots[y][x].pos_z);//test
-            //printf("------------\n");
             free(word[x]);
             x++;
         }
+        free(word[x]);
         y++;
         free(line);
-        //for (x = 0; x < map->width; x++) {
-        //    free(word[x]);
-        //}
         free(word);
         line = get_next_line(fd);
         if (line == NULL)
+        {
+            close(fd);
             return ;
+        }
     }
     free(line);
     close(fd);
 }
 
 int close_window(MAP *map) {
-    
-    // Free dots and map structures
-    mlx_clear_window(map->mlx,map->win);
-    mlx_destroy_window(map->mlx, map->win);
-    //if (map->image_buffer)
-    //    free(map->image_buffer);
-    if (map->image)
-        free(map->image);
     if (map->dots[0]) {
         for (int i = 0; i < map->height; i++) {
                 free(map->dots[i]);
             }
-        }
+    }
+    if (map->dots)
+        free(map->dots);
+    mlx_clear_window(map->mlx,map->win);
+    if (map->image)
+        mlx_destroy_image(map->mlx, map->image);
+    if (map->win)
+        mlx_destroy_window(map->mlx, map->win);
+    if (map->mlx)
+        mlx_destroy_display(map->mlx);
     free(map->mlx);
-    map->mlx = NULL;
-    free(map->dots);
     free(map);
-    
     exit (0);
 }

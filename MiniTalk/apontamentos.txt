@@ -1,0 +1,21 @@
+    signal: Esta função permite manipular sinais no sistema operacional. Sinais são notificações assíncronas enviadas para processos para eventos como interrupções de teclado, término de processos, etc.
+
+    sigemptyset: Usado para inicializar um conjunto vazio de sinais. Isso é útil ao configurar manipuladores de sinais.
+
+    sigaddset: Utilizado para adicionar um sinal específico a um conjunto de sinais. Isso é útil ao configurar quais sinais um processo deve tratar.
+
+    sigaction: Essa função é usada para configurar o tratamento de sinais em um programa. Ela permite definir como um programa deve reagir a um determinado sinal.
+
+    kill: Utilizado para enviar um sinal para um processo específico. Isso pode ser usado para interagir com outros processos.
+
+    getpid: Retorna o ID do processo atual. É útil para identificar o processo em execução.
+
+    malloc e free: malloc é usado para alocar memória dinamicamente, enquanto free é usado para liberar a memória alocada dinamicamente quando não é mais necessária.
+
+    pause: Faz com que o processo atual seja suspenso até que um sinal seja recebido. É útil quando você deseja esperar por um sinal específico.
+
+    sleep e usleep: Essas funções são usadas para introduzir atrasos na execução do programa. sleep pausa a execução por um número especificado de segundos, enquanto usleep pausa a execução por um número especificado de microssegundos.
+
+    exit: Termina a execução do programa e retorna um valor de status ao sistema operacional. É comumente usado para indicar o término bem-sucedido ou com erro de um programa.
+
+Estas são funções essenciais em programação que podem ser usadas para realizar uma variedade de tarefas em sistemas Unix-like. A maneira como você as utiliza depende dos requisitos específicos do seu projeto ou tarefa.

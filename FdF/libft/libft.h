@@ -77,20 +77,15 @@ void				ft_lstclear(t_list **lst, void (*del)(void *));
 void				ft_lstiter(t_list *lst, void (*f)(void *));
 t_list				*ft_lstmap(t_list *lst,
 						void *(*f)(void *), void (*del)(void *));
-//char				*ft_strtok(char *str, char sepa);
-//int					get_next_line(int fd, char **line);
-//int					is_newline(char *backup);
-//int					split_line(char **backup, char **line, int cut_idx);
-//int					return_all(char **backup, char **line, int read_size);
+int					ft_atoi_base(const char *str, int str_base);
 void				ft_striteri(char *s, void (*f)(unsigned int, char*));
-size_t	ft_strlen(const char *s);
-char	*str_join(char *static_data, char *buff);
-int	find_char(char *s, int c);
-char	*update_data(int fd, char *static_data);
-char	*line_cpy(char *line, char *static_data);
-char	*update_line(char **static_data);
-char	*cut_static_data(char **static_data, size_t str_len);
-char	*get_next_line(int fd);
-
+size_t				ft_strlen(const char *s);
+char				*str_join(char *static_data, char *buff);
+int					find_char(char *s, int c);
+char				*update_data(int fd, char *static_data);
+char				*line_cpy(char *line, char *static_data);
+char				*update_line(char **static_data);
+char				*cut_static_data(char **static_data, size_t str_len);
+char				*get_next_line(int fd);
 
 #endif

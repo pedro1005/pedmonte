@@ -60,6 +60,7 @@ SRCS= ft_atoi.c \
       ft_striteri.c \
       get_next_line.c \
       get_next_line_utils.c \
+      ft_atoi_base.c \
 
 # Lista dos arquivos fonte do bonus da biblioteca
 BONUS_SRCS	=	ft_lstadd_back.c \

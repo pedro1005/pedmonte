@@ -1,17 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: pedmonte <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/03 15:10:12 by pedmonte          #+#    #+#             */
-/*   Updated: 2023/09/03 15:17:51 by pedmonte         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../include/fdf.h"
-#include "../libft/libft.h"
 
 int	close_window(MAP *map)
 {
@@ -69,7 +56,7 @@ int	key_hook(int keycode, MAP *map)
 {
 	if (keycode == ESC)
 		close_window(map);
-	/*if (keycode == UP)
+	if (keycode == UP)
 		move_up(map);
 	if (keycode == DOWN)
 		move_down(map);
@@ -84,7 +71,7 @@ int	key_hook(int keycode, MAP *map)
 	if (keycode == D_KEY)
 		rotate_right(map);
 	if (keycode == A_KEY)
-		rotate_left(map);*/
+		rotate_left(map);
 	mlx_destroy_image(map->mlx, map->image);
 	map->image = mlx_new_image(map->mlx, W_WIDTH, W_HEIGHT);
 	draw_lines2d_image(map);
@@ -96,7 +83,6 @@ void	map_loop(MAP *map)
 {
 	draw_lines2d_image(map);
 	mlx_put_image_to_window(map->mlx, map->win, map->image, 0, 0);
-	mlx_string_put(map->mlx, map->win, 10, 50, 0x00FFFF, "Press ESC to exit!");
 	mlx_hook(map->win, KEY_PRESS_EVENT, 1, key_hook, map);
 	mlx_hook(map->win, 17, 0, close_window, map);
 	mlx_loop(map->mlx);

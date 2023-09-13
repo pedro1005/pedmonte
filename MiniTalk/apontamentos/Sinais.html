@@ -1,0 +1,408 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0050)http://www.dei.isep.ipp.pt/~orlando/so2/sinais.htm -->
+<html><head><title>Sinais</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta content="Microsoft FrontPage 5.0" name="GENERATOR">
+<style>
+<!--
+ li.MsoNormal
+	{mso-style-parent:"";
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	layout-grid-mode:line; margin-left:0cm; margin-right:0cm; margin-top:0cm}
+.msg {}.cb {background-image:url('card_left.gif');background-position: left 50%;background-repeat:repeat-y;border-right:1px solid #e8e8e8; }.mb {font-size:80%;padding:6 8 0 14;width:100%}-->
+</style>
+</head>
+<body vlink="#800080" link="#0000ff"><font face="Arial" size="4"><b>
+<p align="justify">Sinais</p></b></font><font size="2">
+<p align="justify">É o modo mais simples de comunicação entre processos. Funcionam 
+como <i>interrupções de software</i>. </p>
+<p align="justify">Cada sinal tem associado a si um <i>handler</i> - uma função 
+que é executada quando um sinal é recebido por um processo. Esse <i>handler 
+</i>pode ser alterado pelo utilizador. Os sinais são utilizados para o 
+tratamento de <i>excepções</i> e de <i>acontecimentos</i> 
+<i>assíncronos</i>.</p>
+<p align="justify">&nbsp;<b>signal(SINAL,handler)</b> - associa o <i>handler</i> 
+ao SINAL. Alguns sinais como SIGKILL e SIGSTOP, não podem ser alterados.</p><b>
+</b><p align="justify"><b>kill(pid_do_processo, SINAL)</b> - envia um sinal para um 
+processo. </p>
+<ul>
+  <li>O processo destino ao receber o sinal executa o <i>handler</i> que foi 
+  associado ao sinal, originando um desvio do programa principal; 
+  </li><li>No fim do <i>handler</i> o CPU continua a execução do programa no ponto 
+  onde ficou; 
+  </li><li>Logo que um sinal é enviado e recebido, o <i>handler</i> <i>default</i> é 
+  novamente associado a esse sinal; 
+  </li><li>Só é possível enviar sinais a processos com mesmo <i>uid</i> (<i>User</i> 
+  <i>IDentification</i>). 
+  </li><li>kill(0,SINAL) - envia o sinal &lt;SINAL&gt; a todos os processos do mesmo 
+  <i>uid</i> do processo actual. </li></ul><b>
+</b><p align="justify"><b>raise</b>(sinal) - envia um sinal para o próprio processo 
+(também se pode conseguir o mesmo objectivo utilizando a função 
+<i>kill</i>).</p><b>
+</b><p align="justify"><b>pause()</b> - suspende o processo corrente até à chegada de um 
+sinal (assim não "gasta" tempo de CPU, por não estar escalonado). </p><b>
+</b><p align="justify"><b>alarm(n)</b> - envia ao processo invocador um sinal SIGALRM 
+dentro de<i> n</i> segundos, mesmo que este não esteja a ser 
+executado.</p></font><b><font face="Arial"><i>
+<p>&nbsp;</p>
+<p>Sinais mais Utilizados: 
+</p></i></font></b><dir><b><font face="Arial"><i>
+</i></font></b><dir><b><font face="Arial"><i></i></font><font size="2">
+</font></b><font size="2"><p><b>SIGSTOP</b> - bloqueia um processo.</p><b>
+</b><p><b>SIGCONT</b> - desbloqueia um processo se estiver bloqueado.</p><b>
+</b><p><b>SIGKILL</b> - <i>mata</i> um processo.</p><b>
+</b><p><b>SIGUSR1</b> - sinal para ser usado pelo utilizador.</p><b>
+</b><p><b>SIGUSR2</b> - sinal para ser usado pelo utilizador.</p><b>
+</b><p><b>SIGINT</b> - interrupção do terminal (gerado pela tecla <i>DEL</i> ou 
+<i>Break</i>)</p><b>
+</b><p><b>SIGHUP</b> - terminal desligado.</p><b>
+</b><p><b>SIGQUIT</b> - abortar a execução.</p><b>
+</b><p><b>SIGILL</b> - instrução ilegal.</p><b>
+</b><p><b>SIGTERM</b> - terminação ordenada do processo.</p><b>
+</b><p><b>SIGCHLD</b> - sinal que um processo recebe quando um filho <i>morre</i> 
+(através do <i>exit</i>).</p><b>
+</b><p><b>SIGALRM</b> - manda o sinal SIGALRM (de <i>alarme</i>) a um 
+processo.</p></font></dir></dir><font size="2">
+<p>&nbsp;</p><b>
+<p>Observações: 
+</p></b><ul><b></b>
+  <li>Um sinal também pode ser ignorado: </li></ul>
+<dir>
+<dir>
+<dir>
+<p>Ex: signal(SIGALRM,SIG_IGN).</p></dir></dir></dir>
+<ul>
+  <li>Pode-se a qualquer momento associar a um sinal o seu <i>handler 
+  default</i>. </li></ul>
+<dir>
+<dir>
+<dir>
+<p>Ex: signal(SIGALRM,SIG_DFL).</p>
+<p align="justify">&nbsp;</p></dir></dir></dir></font><font face="Arial" size="4"><b>
+<p>Exemplo</p></b></font><font size="2">
+<p>&nbsp;</p></font><font face="Courier New" size="2">
+<p>#include &lt;unistd.h&gt;</p>
+<p>#include &lt;sys/wait.h&gt;</p>
+<p>#include &lt;sys/types.h&gt;</p>
+<p>#include &lt;signal.h&gt; </p>
+<p>void trata(int sinal)</p>
+<p>{ 
+</p><dir>
+<dir>
+<p>printf("Apanhei o sinal %d \n", sinal);</p></dir></dir>
+<p>}</p>
+<p>&nbsp;</p>
+<p>main()</p>
+<p>{</p>
+<p>pid_t pid;</p>
+<p>int estado,i;</p>
+<p>pid = fork();</p>
+<p>if (pid &lt; 0 )</p>
+<p>{ 
+</p><dir>
+<dir>
+<p>printf("Erro!!!\n");</p>
+<p>exit (-1);</p></dir></dir>
+<p>}</p>
+<p>else 
+</p><dir>
+<dir>
+<p>if (pid == 0) /* FILHO */</p>
+<p>{
+</p><dir>
+<dir>
+<p>printf("Estou ‘a espera de sinais\n");</p>
+<p>signal(SIGINT, trata); /* se o filho receber o sinal SIGINT, 
+</p><dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<p>executa a funcao <i>trata</i> 
+*/</p></dir></dir></dir></dir></dir></dir></dir></dir>
+<p>signal(SIGUSR2, trata);/* se o filho receber o sinal SIGUSR2, 
+</p><dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<p>executa a funcao <i>trata</i> 
+*/</p></dir></dir></dir></dir></dir></dir></dir></dir></dir></dir></dir></dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<p align="justify">for (i=0;i&lt;3;i++) </p>
+<dir>
+<dir>
+<p align="justify">pause(); /* o filho fica ‘a espera que cheguem </p>
+<dir>
+<dir>
+<p>sinais&nbsp; 
+*/</p></dir></dir></dir></dir></dir></dir></dir></dir>
+<dir>
+<dir>
+<p>}</p></dir></dir>
+<dir>
+<dir>
+<p>else /* PAI */</p>
+<p>{ 
+</p><dir>
+<dir>
+<p>printf("Vou enviar sinais\n");</p>
+<p>sleep(3); /* "Adormece" durante 3 segundos */</p>
+<p>kill(pid, SIGUSR2); /* envia ao processo <i>filho</i> o sinal 
+</p><dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<p>SIGUSR2 */</p></dir></dir></dir></dir></dir></dir>
+<p>sleep(3); /* "Adormece" durante 3 segundos */</p>
+<p>kill(pid, SIGINT); /* envia ao processo <i>filho</i> o sinal 
+</p><dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<p>SIGINT */</p></dir></dir></dir></dir></dir></dir>
+<p>sleep(3); /* "Adormece" durante 3 segundos */</p>
+<p>kill(pid, SIGUSR2); /* envia ao processo <i>filho</i> o sinal 
+</p><dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<p>SIGUSR2 */</p></dir></dir></dir></dir></dir></dir>
+<p>pid = wait(&amp;estado); /* espera que o <i>filho</i> termine 
+*/</p></dir></dir>
+<p>}</p></dir></dir>
+<p>}</p>
+<p>&nbsp;</p></font><font face="Arial" size="4"><b>
+<p>Exercícios:</p></b></font>
+<p class="MsoNormal"><span lang="EN-GB">1- Considere o seguinte programa:</span></p>
+<p class="MsoNormal"><span lang="EN-GB">...</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">&nbsp;</span><span lang="EN-GB" style="font-size: 9.0pt; font-family: Courier New">void 
+funcao()</span></p>
+<p class="MsoNormal">
+<span lang="EN-GB" style="font-size: 9.0pt; font-family: Courier New">{</span></p>
+<p class="MsoNormal">
+<span lang="EN-GB" style="font-size: 9.0pt; font-family: Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+execlp("prog", "prog", 0);</span></p>
+<p class="MsoNormal">
+<span lang="EN-GB" style="font-size: 9.0pt; font-family: Courier New">}</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">void main()</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">{</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+pid_t pid;</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+int i;</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+pid = fork();</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+if (pid == 0)</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ for(i=0; i&lt;5; i++)</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ {</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ kill(getppid(), SIGUSR1);</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ sleep(2);</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ }</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+else </span></p>
+<p class="MsoNormal" style="margin-left:35.4pt;text-indent:35.4pt">
+<span lang="EN-GB" style="font-size: 9.0pt">if (pid &gt;0)</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ {</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ signal(SIGUSR1,funcao);</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ for(; ;)</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ pause();</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ }</span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp; </span></p>
+<p class="MsoNormal"><span lang="EN-GB" style="font-size: 9.0pt">}</span></p>
+<p class="MsoNormal"><span lang="EN-GB">&nbsp;</span></p>
+<p class="MsoNormal">Quantas vezes é executado o programa <b>prog</b>? <b>
+Justifique</b>.</p>
+<p class="MsoNormal"><span style="font-size: 10.0pt; layout-grid-mode: both">&nbsp;</span></p>
+<p class="MsoNormal"><span style="layout-grid-mode: both">2 – </span>Implemente 
+um programa que, após criar um novo processo, tem o seguinte comportamento 
+cíclico:</p>
+<p class="MsoNormal" style="margin-left: 35.4pt">- o processo <i>pai</i> aguarda 
+2 segundos e envia ao filho um sinal SIGUSR1;</p>
+<p class="MsoNormal" style="margin-left: 35.4pt">- o processo <i>filho</i>, após 
+a recepção do sinal, imprime "Apanhei o sinal SIGUSR1"<br>
+&nbsp;</p>
+<p class="MsoNormal"><span style="layout-grid-mode: both">3 - Faça um programa 
+que:</span></p>
+<ul type="disc" style="margin-bottom: 0cm">
+  <li class="MsoNormal"><span style="layout-grid-mode: both">Lê caracteres 
+  através do teclado; </span></li>
+  <li class="MsoNormal"><span style="layout-grid-mode: both">Se após dez 
+  segundos ainda não terminou essa leitura, o programa escreve "Está a demorar 
+  muito tempo a introduzir os dados!!!" </span></li>
+</ul>
+<p class="MsoNormal"><span style="layout-grid-mode: both">&nbsp;</span></p>
+<p class="MsoNormal"><span style="layout-grid-mode: both">4 - Faça um programa 
+que simule a função <i>sleep(n)</i>. </span></p>
+<p class="MsoNormal"><span style="layout-grid-mode: both">&nbsp;</span></p>
+<p class="MsoNormal" style="text-align: justify; text-justify: inter-ideograph">
+<span style="layout-grid-mode: both">5 - </span>O acesso por parte de vários 
+processos a um mesmo recurso exige sincronização. Implemente um programa que 
+cria um novo processo e sincroniza o<br>
+acesso ao&nbsp; ficheiro "dados.txt" através do uso de sinais. </p>
+<p class="MsoNormal"><span style="layout-grid-mode: both">O processo <i>pai</i> 
+fica à espera que chegue um sinal SIGUSR1; depois de receber o sinal, deve ler 
+do ficheiro "dados.txt" um número; depois de lido esse número, deve remover o 
+conteúdo desse ficheiro e apresentar esse conteúdo no monitor; por fim envia ao
+<i>filho </i>um sinal SIGUSR1. O processo <i>filho</i> é responsável por 
+escrever um novo número no ficheiro.</span></p>
+<p class="MsoNormal"><span style="layout-grid-mode: both">Nota: As operações de 
+escrita e leitura devem ser feitas ciclicamente. </span></p>
+<p class="MsoNormal"><span style="layout-grid-mode: both">&nbsp;</span></p>
+<p class="MsoNormal"><span style="layout-grid-mode: both">6 - Tendo um <i>array</i> 
+de 1000 posições, faça um programa que crie 5 processos e: </span></p>
+<ul type="disc" style="margin-bottom: 0cm">
+  <ul type="circle" style="margin-bottom: 0cm">
+    <li class="MsoNormal"><span style="layout-grid-mode: both">Dado um número, 
+    procurar esse número no <i>array</i>. </span></li>
+    <li class="MsoNormal"><span style="layout-grid-mode: both">Cada processo <i>
+    filho</i>, procura 200 posições. </span></li>
+    <li class="MsoNormal"><span style="layout-grid-mode: both">O processo que 
+    encontrar o número, deve imprimir a posição do <i>array</i> onde se 
+    encontra. Também deve "retornar" como valor de saída o número do processo 
+    (1, 2, 3, 4, 5). </span></li>
+    <li class="MsoNormal"><span style="layout-grid-mode: both">Os processos que 
+    não encontrarem o número devem "retornar" como <i>valor de saída</i> o valor 
+    0. </span></li>
+    <li class="MsoNormal"><span style="layout-grid-mode: both">O processo <i>pai</i> 
+    tem que imprimir o número do processo onde esse número foi encontrado (1, 2, 
+    3, 4, 5) e de seguida <i>matar</i> todos os processos. </span></li>
+  </ul>
+</ul>
+<p class="MsoNormal" style="margin-left: 72.0pt">
+<span style="layout-grid-mode: both">Nota: O <i>array</i> não tem números 
+repetidos.</span></p>
+<p class="MsoNormal" style="margin-left: 72.0pt">
+<span style="layout-grid-mode: both">&nbsp;</span></p>
+<p class="MsoNormal"><span style="layout-grid-mode: both">&nbsp;7 - Desenvolva um 
+programa que faça o escalonamento de processos por ele criados (em cada instante 
+só um dos programas está a ser executado) com a seguinte sintaxe:</span></p>
+<p class="MsoNormal"><b>
+<span style="font-family: Courier New; layout-grid-mode: both">&nbsp;&nbsp;&nbsp; escalonar</span></b><span style="font-family: Courier New; layout-grid-mode: both"> 
+programa1 programa2 … programan</span></p>
+<p class="MsoNormal"><span style="layout-grid-mode: both">Utilize os sinais 
+SIGSTOP e SIGCONT e assuma que cada programa é executado durante 5 segundos 
+consecutivos, dando depois a oportunidade a outro programa de ser executado 
+(ficando assim à espera da sua vez para continuar a execução). Assuma que os 
+programas nunca terminam. Utilize as primitivas de processos, sinais e funções 
+exec.</span></p>
+<p class="MsoNormal"><span style="layout-grid-mode: both">8 - Considere um <i>
+array</i> em que cada posição contém o nome de um comando e o tempo máximo de 
+execução. Caso um comando esgote o seu tempo máximo de execução, deverá ser 
+terminado. Implemente um programa que execute sequencialmente todos os comandos 
+contidos no <i>array</i> tendo em conta as funcionalidades descritas 
+anteriormente. Utilize as primitivas de processos, sinais e as funções<i> exec</i>. 
+O <i>array</i> é constituído por estruturas do tipo abaixo:</span></p>
+<p class="MsoNormal"><span style="font-family: Arial; layout-grid-mode: both">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+<span style="font-size: 10.0pt; font-family: Arial; layout-grid-mode: both">
+typedef struct { </span></p>
+<p class="MsoNormal">
+<span style="font-size: 10.0pt; font-family: Arial; layout-grid-mode: both">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ char cmd[32];</span></p>
+<p class="MsoNormal">
+<span style="font-size: 10.0pt; font-family: Arial; layout-grid-mode: both">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ int tempo;</span></p>
+<p class="MsoNormal">
+<span style="font-size: 10.0pt; font-family: Arial; layout-grid-mode: both">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } comando;</span></p>
+<p class="MsoNormal"><span style="font-size: 10.0pt; layout-grid-mode: both">&nbsp;</span></p>
+<p class="MsoNormal">&nbsp;9&nbsp; -&nbsp;&nbsp; Uma empresa de <i>software</i> pretende testar a 
+viabilidade da aplicação de um novo algoritmo no processamento de dados para 
+descobrir determinado tipo de informação. Para isso, pretende utilizar esse novo 
+algoritmo numa simulação que utiliza programação paralela/concorrente. A 
+aplicação a desenvolver deve criar 50 processos e testar a funcionalidade do 
+novo algoritmo da seguinte forma:&nbsp;</p>
+<p class="MsoNormal" style="text-indent: 0cm; margin-left: 1.0cm">
+<span style="font-size: 6.0pt; font-family: Symbol">·<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span dir="LTR">Cada processo começa por executar a função <b>
+simula1()</b>. Essa função retorna <i>Verdade</i> se encontrou os dados e 
+retorna <i>Falso</i> se não encontrou os dados. Quando termina de executar a 
+função, cada processo deve enviar o sinal SIGUSR1 se a função teve sucesso (ou o 
+sinal SIGUSR2 se não teve sucesso) para o processo que faz a gestão da 
+simulação. Depois deve esperar que o processo <i>gestor</i> lhe envie um sinal 
+para começar a função <b>simula2()</b>.</span></p>
+<p class="MsoNormal" style="text-indent: 0cm; margin-left: 1.0cm">
+<span style="font-size: 6.0pt; font-family: Symbol">·<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span dir="LTR">O processo pai deverá gerir a simulação, 
+efectuando o seguinte teste após<br>
+terem terminado 25 processos:</span></p>
+<p class="MsoNormal" style="text-indent: 0cm; margin-left: 1.0cm">
+<span style="font-size: 6.0pt; font-family: Symbol">·<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span dir="LTR">Se até esse momento nenhuma das pesquisas tiver 
+sido efectuada com sucesso o processo pai deverá imprimir no ecrã "Algoritmo 
+ineficiente!" e terminar os<br>
+restantes processos <i>filho</i> que ainda se encontram em execução.</span>&nbsp;</p>
+<p class="MsoNormal" style="text-indent: 0cm; margin-left: 1.0cm">
+<span style="font-size: 6.0pt; font-family: Symbol">·<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span dir="LTR">Se até esse momento existir pelo menos um processo 
+que tenha efectuado uma<br>
+pesquisa com sucesso, o processo pai deverá enviar um sinal para os processos<br>
+que ainda se encontram em execução, indicando que estes devem começar a<br>
+executar a função simula2(), interrompendo a execução da função simula1().</span></p>
+<p class="MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Nota: utilize 
+números aleatórios na implementação das funções <b>simula1()</b> e <b>simula2()</b>.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoBodyText" align="left" style="text-align: left">10 - Para optimizar 
+o tempo de resposta aos clientes de uma empresa de assistência automóvel, foi 
+encarregado de desenvolver uma aplicação que utilize dez processos para 
+pesquisar na base de dados a oficina da região onde um determinado cliente se 
+encontra. A aplicação deve perguntar o nome da região onde o cliente se 
+encontra. Quando um dos processos encontrar a região deve&nbsp; escrever o nome da 
+oficina e o respectivo número de telefone. Se a região já foi encontrada, o 
+processo que está a gerir os outros 10 processos, deve terminar a execução dos 
+que ainda não terminaram.</p>
+<p class="MsoNormal">Nota: Considere que a base de dados contém 10000 posições e 
+que cada posição é do tipo:</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">typedef struct {</p>
+<p class="MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; char nome_oficina[50];</p>
+<p class="MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; char regiao[50];</p>
+<p class="MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int telefone;</p>
+<p class="MsoNormal">} registo;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; </p>
+
+</body></html>

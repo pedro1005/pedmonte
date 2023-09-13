@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    pid_t server_pid = atoi(argv[1]);
+    int server_pid = atoi(argv[1]);
     int signal_number = atoi(argv[2]);
 
     if (signal_number == 1)

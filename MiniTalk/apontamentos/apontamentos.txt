@@ -19,3 +19,138 @@
     exit: Termina a execução do programa e retorna um valor de status ao sistema operacional. É comumente usado para indicar o término bem-sucedido ou com erro de um programa.
 
 Estas são funções essenciais em programação que podem ser usadas para realizar uma variedade de tarefas em sistemas Unix-like. A maneira como você as utiliza depende dos requisitos específicos do seu projeto ou tarefa.
+
+-----------------------------------------------------------------------
+
+Crie um pipe nomeado:
+
+Você precisa criar um pipe nomeado para que o cliente possa escrever a mensagem e o servidor possa ler a mensagem desse pipe. Execute os seguintes comandos no terminal:
+
+bash
+
+mkfifo mypipe
+
+Isso criará um pipe nomeado chamado "mypipe" no diretório atual.
+
+Modifique o código do cliente (client.c):
+
+Agora, você pode modificar o código do cliente para abrir o pipe nomeado e escrever a mensagem nele:
+
+c
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
+
+int main(int argc, char *argv[])
+{
+    if (argc != 3)
+    {
+        fprintf(stderr, "Uso: %s <Nome do Pipe> <Frase para enviar>\n", argv[0]);
+        exit(1);
+    }
+
+    char *pipe_name = argv[1];
+    char *message = argv[2];
+
+    int pipe_fd = open(pipe_name, O_WRONLY);
+    if (pipe_fd == -1)
+    {
+        perror("Erro ao abrir o pipe");
+        exit(2);
+    }
+
+    write(pipe_fd, message, strlen(message));
+    close(pipe_fd);
+
+    return 0;
+}
+
+Modifique o código do servidor (server.c):
+
+Modifique o código do servidor para abrir o mesmo pipe nomeado e ler a mensagem:
+
+c
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <unistd.h>
+#include <string.h>
+
+static void sig_usr(int signo);
+
+int main(void)
+{
+    if (signal(SIGUSR1, sig_usr) == SIG_ERR)
+    {
+        fprintf(stderr, "Can't catch SIGUSR1\n");
+        exit(1);
+    }
+
+    printf("Server is running with PID %d\n", getpid());
+
+    for (;;)
+        pause();
+}
+
+static void sig_usr(int signo)
+{
+    if (signo == SIGUSR1)
+    {
+        printf("Received SIGUSR1\n");
+
+        int pipe_fd = open("mypipe", O_RDONLY);
+        if (pipe_fd == -1)
+        {
+            perror("Erro ao abrir o pipe");
+            exit(2);
+        }
+
+        char buffer[512];
+        ssize_t bytes_read = read(pipe_fd, buffer, sizeof(buffer));
+        if (bytes_read == -1)
+        {
+            perror("Erro ao ler do pipe");
+            exit(3);
+        }
+
+        buffer[bytes_read] = '\0';
+        printf("Received Message: %s\n", buffer);
+
+        close(pipe_fd);
+    }
+    else
+    {
+        fprintf(stderr, "Received signal %d\n", signo);
+        exit(4);
+    }
+}
+
+Compilação e Execução:
+
+Compile o cliente e o servidor como antes:
+
+bash
+
+gcc -o client client.c
+gcc -o server server.c
+
+Inicie o servidor em um terminal:
+
+bash
+
+./server
+
+Em outro terminal, execute o cliente, fornecendo o nome do pipe e a mensagem como argumentos:
+
+bash
+
+    ./client mypipe "Olá, servidor!"
+
+    O cliente enviará a mensagem para o servidor através do pipe nomeado, e o servidor a lerá e a imprimirá.
+
+Lembre-se de que este é um exemplo simples de comunicação entre o cliente e o servidor usando pipes nomeados. Em uma aplicação real, você deve adicionar tratamento de erros e considerar problemas de sincronização e segurança, dependendo dos requisitos do seu aplicativo.

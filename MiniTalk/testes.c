@@ -77,7 +77,7 @@ int bin_to_char(int** ptr)
     int    val;
     
     byte_idx = 0;
-    printf("Value per 8 bit -> ");
+    //printf("Value per 8 bit -> ");
     while (ptr[byte_idx])
     {
         bit_idx = 0;
@@ -90,7 +90,7 @@ int bin_to_char(int** ptr)
               c <<= 1;
            bit_idx++;
         }
-        printf("%d : ", c);
+        //printf("%d : ", c);
         byte_idx++;
     }
     return (c);
@@ -120,6 +120,9 @@ int** char_to_bin(char* str)
         while (bit_index >= 0) {
            ptr[byte_index][i++] = (str[byte_index] >> bit_index) & 1;
            //printf("%d -> %d\n", str[byte_index] >> bit_index, (str[byte_index] >> bit_index) & 1);
+           //printf("str[%d] = %c\n", byte_index, str[byte_index]);
+           //printf("(str[%d] >> %d) = %d\n", byte_index, bit_index, str[byte_index] >> bit_index);
+           //printf("(str[%d] >> %d) & 1 = %d!\n", byte_index, bit_index, (str[byte_index] >> bit_index) & 1);
            bit_index--;
         }
         //printf(" : ");
@@ -129,7 +132,7 @@ int** char_to_bin(char* str)
 }
 
 int main(void) {
-   char* input_char = "OLA"; // Change this character as needed
+   char* input_char = "Teste"; // Change this character as needed
    int** ptr;
    char result_char;
    int  x,y = 0;
@@ -140,7 +143,7 @@ int main(void) {
    while(ptr[y])
    {
         x = 0;
-        while (x < 7)
+        while (x <= 7)
         {
             printf("%d", ptr[y][x]);
             x++;

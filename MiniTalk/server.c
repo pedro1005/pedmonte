@@ -1,42 +1,41 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
 
-static void sig_usr(int signo);
+static char received_char = '\0';
 
-int main(void)
-{
-    if (signal(SIGUSR1, sig_usr) == SIG_ERR)
-    {
-        fprintf(stderr, "Can't catch SIGUSR1\n");
-        exit(1);
+void sig_handler(int signum) {
+    static int bit_index = 0;
+
+    if (signum == SIGUSR1) {
+        received_char = received_char | (1 << bit_index);
     }
-    if (signal(SIGUSR2, sig_usr) == SIG_ERR)
-    {
-        fprintf(stderr, "Can't catch SIGUSR2\n");
-        exit(1);
+    bit_index++;
+    if (bit_index == 8) {
+        if (received_char == '\0') {
+            printf("\n");
+        } else {
+            printf("%c", received_char);
+        }      
+        received_char = '\0';
+        bit_index = 0;
     }
-
-    printf("Server is running with PID %d\n", getpid());
-
-    for (;;)
-        pause();
 }
 
-static void sig_usr(int signo)
-{
-    if (signo == SIGUSR1)
-    {
-        printf("Received SIGUSR1\n");
+int main() {
+    struct sigaction sa;
+    
+    // Set up signal handler
+    sa.sa_handler = sig_handler;
+    sigaction(SIGUSR1, &sa, NULL);
+    sigaction(SIGUSR2, &sa, NULL);
+
+    // Print the server PID
+    printf("Server PID: %d\n", getpid());
+
+    while (1) {
+        pause();
     }
-    else if (signo == SIGUSR2)
-    {
-        printf("Received SIGUSR2\n");
-    }
-    else
-    {
-        fprintf(stderr, "Received signal %d\n", signo);
-        exit(2);
-    }
+
+    return 0;
 }

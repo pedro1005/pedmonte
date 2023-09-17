@@ -1,40 +1,38 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <signal.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
-int main(int argc, char *argv[])
-{
-    if (argc != 3)
-    {
-        fprintf(stderr, "Uso: %s <PID do servidor> <Número do Sinal (1 para SIGUSR1, 2 para SIGUSR2)>\n", argv[0]);
+void send_character(int pid, char c) {
+    int bit_index;
+    
+    for (bit_index = 0; bit_index < 8; bit_index++) {
+        if ((c >> bit_index) & 1) {
+            kill(pid, SIGUSR1);
+        } else {
+            kill(pid, SIGUSR2);
+        }
+        usleep(100);
+    }
+}
+
+int main(int argc, char* argv[]) {
+    if (argc != 3) {
+        printf("Usage: %s <server_pid> <message>\n", argv[0]);
         exit(1);
     }
 
     int server_pid = atoi(argv[1]);
-    int signal_number = atoi(argv[2]);
-
-    if (signal_number == 1)
-    {
-        if (kill(server_pid, SIGUSR1) == -1)
-        {
-            perror("Erro ao enviar SIGUSR1");
-            exit(2);
-        }
+    char* message = argv[2];
+    
+    // Send each character of the message to the server
+    for (size_t i = 0; i < strlen(message); i++) {
+        send_character(server_pid, message[i]);
     }
-    else if (signal_number == 2)
-    {
-        if (kill(server_pid, SIGUSR2) == -1)
-        {
-            perror("Erro ao enviar SIGUSR2");
-            exit(2);
-        }
-    }
-    else
-    {
-        fprintf(stderr, "Número de sinal inválido. Use 1 para SIGUSR1 ou 2 para SIGUSR2.\n");
-        exit(1);
-    }
-
+    
+    // Send a null character to indicate the end of the message
+    send_character(server_pid, '\0');
+    
     return 0;
 }

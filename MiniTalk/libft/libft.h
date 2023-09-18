@@ -95,7 +95,7 @@ int		print_u(char *temp, va_list ptr);
 int		print_x(char *temp, va_list ptr);
 int		print_upx(char *temp, va_list ptr);
 int		print_p(char *temp, va_list ptr);
-long	count_chars(long number);
+
 int		get_x_len(unsigned int temp_value);
 void	print_address(unsigned long long address, int num_chars);
 int		print_formats(const char *str, int i, int n_chars, va_list ptr);

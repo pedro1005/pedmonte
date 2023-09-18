@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "libft/libft.h"
 
 void send_character(int pid, char c)
 {
@@ -28,13 +29,13 @@ int main(int argc, char* argv[])
 
     if (argc != 3)
     {
-        printf("Invalid arguments\n");
+        ft_printf("Invalid arguments\n");
         exit(1);
     }
     i = 0;
-    server_pid = atoi(argv[1]);
+    server_pid = ft_atoi(argv[1]);
     message = argv[2];
-    while (i < strlen(message))
+    while (i < ft_strlen(message))
     {
         send_character(server_pid, message[i]);
         i++;

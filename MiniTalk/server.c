@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
+#include "libft/libft.h"
 
 void sig_handler(int signum)
 {
@@ -17,9 +18,9 @@ void sig_handler(int signum)
     if (bit_index == 8)
     {
         if (received_char == '\0')
-            printf("\n");
+            ft_printf("\n");
         else
-            printf("%c", received_char);   
+            ft_printf("%c", received_char);   
         received_char = '\0';
         bit_index = 0;
     }
@@ -31,7 +32,7 @@ int main() {
     sa.sa_handler = sig_handler;
     sigaction(SIGUSR1, &sa, NULL);
     sigaction(SIGUSR2, &sa, NULL);
-    printf("Server PID: %d\n", getpid());
+    ft_printf("Server PID: %d\n", getpid());
     while (1) {
         pause();
     }

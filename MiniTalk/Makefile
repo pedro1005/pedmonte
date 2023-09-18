@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 NAME_SERVER = server
 NAME_CLIENT = client
 LIBFT_DIR = libft
@@ -22,3 +22,5 @@ clean:
 
 fclean: clean
 	make -C $(LIBFT_DIR) fclean
+
+re: fclean all

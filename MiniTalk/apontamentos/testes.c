@@ -2,6 +2,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "libft/libft.h"
 
 // Signal() - Teste de sig_handler com SIGINT - interromper
 
@@ -68,7 +69,7 @@ int main(void)
     return (0);
 
 }*/
-
+/*
 int bin_to_char(int** ptr)
 {
     static char  c;
@@ -130,47 +131,45 @@ int** char_to_bin(char* str)
     }
     return (ptr);
 }
+*/
+char	*ft_strjoin(char *s1, char const *s2)
+{
+	char	*res;
+	size_t	len;
+	size_t	i;
+	int		j;
 
+	i = 0;
+	j = 0;
+	len = strlen(s1) + strlen(s2) + 1;
+	res = (char *)malloc(sizeof(char) * len);
+	if (!res)
+		return (NULL);
+	if (!s1)
+		s1 = "";
+	while (s1[i] && i < len)
+	{
+		res[i] = s1[i];
+		i++;
+	}
+	while (s2[j] && i < len)
+	{
+		res[i] = s2[j];
+		i++;
+		j++;
+	}
+	res[i] = 0;
+	return (res);
+}
 int main(void) {
-   char* input_char = "Teste"; // Change this character as needed
-   int** ptr;
-   char result_char;
-   int  x,y = 0;
-
-   // Convert character to binary representation
-   ptr = char_to_bin(input_char);
-
-   while(ptr[y])
-   {
-        x = 0;
-        while (x <= 7)
-        {
-            printf("%d", ptr[y][x]);
-            x++;
-        }
-        printf("\n");
-        y++;
-   }
-
-   // Check if conversion was successful
-   if (ptr != NULL) {
-       // Convert binary representation back to character
-       result_char = bin_to_char(ptr);
-
-       // Print the original character and the result character
-       printf("Original Character: %s\n", input_char);
-       printf("Result Character: %d\n", result_char);
-
-       // Free the memory allocated for the binary representation
-       int byte_index = 0;
-       while (ptr[byte_index]) {
-           free(ptr[byte_index]);
-           byte_index++;
-       }
-       free(ptr);
-   } else {
-       printf("Conversion failed.\n");
-   }
-
-   return 0;
+   
+   char *res;
+   char *temp;
+   
+   temp = NULL;
+   res = ft_strjoin("a", "b");
+   temp = res;
+   //free(res);
+   printf("res: %s\ntemp: %s\n", res, temp);
+   return (0);
 }

@@ -87,17 +87,17 @@ char				*line_cpy(char *line, char *static_data);
 char				*update_line(char **static_data);
 char				*cut_static_data(char **static_data, size_t str_len);
 char				*get_next_line(int fd);
-int		ft_printf(const char *str, ...);
-int		print_s(char *temp, va_list ptr);
-int		print_d(char *temp, va_list ptr);
-int		print_c(char *temp, va_list ptr);
-int		print_u(char *temp, va_list ptr);
-int		print_x(char *temp, va_list ptr);
-int		print_upx(char *temp, va_list ptr);
-int		print_p(char *temp, va_list ptr);
-
-int		get_x_len(unsigned int temp_value);
-void	print_address(unsigned long long address, int num_chars);
-int		print_formats(const char *str, int i, int n_chars, va_list ptr);
+int					ft_printf(const char *str, ...);
+int					print_s(char *temp, va_list ptr);
+int					print_d(char *temp, va_list ptr);
+int					print_c(char *temp, va_list ptr);
+int					print_u(char *temp, va_list ptr);
+int					print_x(char *temp, va_list ptr);
+int					print_upx(char *temp, va_list ptr);
+int					print_p(char *temp, va_list ptr);
+int					get_x_len(unsigned int temp_value);
+void				print_address(unsigned long long address, int num_chars);
+int					print_formats(const char *str,
+						int i, int n_chars, va_list ptr);
 
 #endif

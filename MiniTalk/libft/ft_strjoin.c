@@ -25,20 +25,16 @@ char	*ft_strjoin(char *s1, char const *s2)
 	res = (char *)malloc(sizeof(char) * len);
 	if (!res)
 		return (NULL);
+	if (!s1)
+		s1 = "";
 	while (s1[i] && i < len)
 	{
 		res[i] = s1[i];
 		i++;
 	}
 	while (s2[j] && i < len)
-	{
-		res[i] = s2[j];
-		i++;
-		j++;
-	}
+		res[i++] = s2[j++];
 	res[i] = 0;
-	if(ft_strlen(s1) > 1)
-		free(s1);
 	return (res);
 }
 /*

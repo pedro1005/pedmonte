@@ -65,4 +65,3 @@ int	ft_printf(const char *str, ...)
 	va_end(ptr);
 	return (n_chars);
 }
-

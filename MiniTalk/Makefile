@@ -14,6 +14,8 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 NAME_SERVER = server
 NAME_CLIENT = client
+NAME_SERVER_BONUS = server_bonus
+NAME_CLIENT_BONUS = client_bonus
 LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
@@ -28,8 +30,19 @@ $(NAME_CLIENT): client.c $(LIBFT)
 $(LIBFT):
 	@make -C $(LIBFT_DIR)
 
+bonus: fclean $(NAME_SERVER_BONUS) $(NAME_CLIENT_BONUS)
+
+$(NAME_SERVER_BONUS): server_bonus.c $(LIBFT)
+	$(CC) $(CFLAGS) -o $@ $^
+
+$(NAME_CLIENT_BONUS): client_bonus.c $(LIBFT)
+	$(CC) $(CFLAGS) -o $@ $^
+
+$(LIBFT):
+	@make -C $(LIBFT_DIR)
+
 clean:
-	rm -f $(NAME_SERVER) $(NAME_CLIENT)
+	rm -f $(NAME_SERVER) $(NAME_CLIENT) $(NAME_SERVER_BONUS) $(NAME_CLIENT_BONUS)
 	make -C $(LIBFT_DIR) clean
 
 fclean: clean

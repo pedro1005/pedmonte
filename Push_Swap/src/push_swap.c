@@ -1,6 +1,6 @@
 #include "../includes/push_swap.h"
 
-void	ft_check_errors(int argc)
+void	ft_check_errors(int argc) // incomplete
 {
 	if (argc == 1)
 	{
@@ -120,28 +120,69 @@ void	ft_ss(t_stack_node **head_a, t_stack_node **head_b)
 	
 }
 
-void ft_pa(t_stack_node **head_a, t_stack_node **head_b)
+void	ft_pa(t_stack_node **head_a, t_stack_node **head_b)
 {
-    // Check if head_b is not empty
-    if (*head_b != NULL) {
-        t_stack_node *node_to_move = *head_b; // Get the first node from head_b
-        
-        // Remove the node from head_b
-        *head_b = node_to_move->next;
-        if (*head_b != NULL) {
-            (*head_b)->prev = NULL;
-        }
-        
-        // Insert the node at the beginning of head_a
-        node_to_move->next = *head_a;
-        node_to_move->prev = NULL;
-        if (*head_a != NULL) {
-            (*head_a)->prev = node_to_move;
-        }
-        *head_a = node_to_move;
-    }
+    t_stack_node	*node_to_pop;
+	t_stack_node	*temp;
+
+	if (*head_b == NULL)
+		return ;
+	node_to_pop = ft_pop(head_b);
+	temp = *head_a;
+	*head_a = node_to_pop;
+	(*head_a)->next = temp;
+	temp->prev = *head_a;
+	ft_update_pos(head_a);
+	ft_update_pos(head_b);
+	ft_printf("pa\n");
 }
 
+void	ft_pb(t_stack_node **head_a, t_stack_node **head_b)
+{
+    t_stack_node	*node_to_pop;
+	t_stack_node	*temp;
+
+	if (*head_a == NULL)
+		return ;
+	node_to_pop = ft_pop(head_a);
+	temp = *head_b;
+	*head_b = node_to_pop;
+	(*head_b)->next = temp;
+	temp->prev = *head_b;
+	ft_update_pos(head_a);
+	ft_update_pos(head_b);
+	ft_printf("pb\n");
+}
+
+t_stack_node	*ft_pop(t_stack_node **head) //need to free node_to_pop
+{
+	t_stack_node *node_to_pop;
+
+	if (*head == NULL)
+		return (NULL);
+	node_to_pop = *head;
+	if (node_to_pop->next)
+		*head = node_to_pop->next;
+	(*head)->prev = NULL;
+	node_to_pop->next = NULL;
+	node_to_pop->prev = NULL;
+	ft_update_pos(head);
+	return (node_to_pop);
+}
+
+void	ft_update_pos(t_stack_node **head_a)
+{
+	t_stack_node	*current;
+	int				pos;
+
+	current = *head_a;
+	pos = 0;
+	while (current != NULL)
+	{
+		current->position = pos++;
+		current = current->next;
+	}
+}
 
 int	main(int argc, char **argv)
 {
@@ -152,9 +193,23 @@ int	main(int argc, char **argv)
 	head_b = NULL;
 	ft_check_errors(argc); // incomplete!!
 	ft_fill_stack_a(&head_a, argv);
+	ft_fill_stack_a(&head_b, argv);
+	ft_printf("stack a\n");
 	ft_print_stack(head_a);
-	ft_sa(&head_a);
+	ft_printf("stack b\n");
+	ft_print_stack(head_b);
+	ft_pa(&head_a, &head_b);
+	ft_printf("stack a\n");
 	ft_print_stack(head_a);
+	ft_printf("stack b\n");
+	ft_print_stack(head_b);
+	ft_pa(&head_a, &head_b);
+	//ft_pa(&head_a, &head_b);
+	//ft_pa(&head_a, &head_b);
+	ft_printf("stack a\n");
+	ft_print_stack(head_a);
+	ft_printf("stack b\n");
+	ft_print_stack(head_b);
 	ft_free_stack(head_a);
 	ft_free_stack(head_b);
 	return (0);

@@ -27,6 +27,7 @@
 # include <stdio.h>
 # include <fcntl.h>
 # include <signal.h>
+# include <stdarg.h>
 
 typedef struct s_list
 {

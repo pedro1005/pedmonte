@@ -8,7 +8,7 @@ OBJ_PATH = objs
 HEADER = includes
 SRC_PATH = src
 
-SOURCES = push_swap.c
+SOURCES = push_swap.c ps_utils1.c ps_utils2.c ps_utils3.c ps_utils4.c
 
 SRCS := $(addprefix $(SRC_PATH)/,$(SOURCES))
 OBJS := $(addprefix $(OBJ_PATH)/,$(SOURCES:.c=.o))

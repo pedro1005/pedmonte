@@ -21,17 +21,20 @@ void	ft_print_stack(t_stack_node *head)
 	}
 }
 
-void	ft_free_stack(t_stack_node *head)
+void	ft_free_stack(t_stack_node **head)
 {
 	t_stack_node	*current;
 	t_stack_node	*temp;
 
-	current = head;
-	while (current != NULL)
+	current = *head;
+	while (current->next)
 	{
 		temp = current;
-		current = current->next;
-		free(temp);
+		if (current->next)
+		{
+			current = current->next;
+			free(temp);
+		}
 	}
 }
 
@@ -122,19 +125,24 @@ void	ft_ss(t_stack_node **head_a, t_stack_node **head_b)
 
 void	ft_pa(t_stack_node **head_a, t_stack_node **head_b)
 {
-    t_stack_node	*node_to_pop;
-	t_stack_node	*temp;
+    if (*head_b == NULL)
+        return; // Nothing to push
 
-	if (*head_b == NULL)
-		return ;
-	node_to_pop = ft_pop(head_b);
-	temp = *head_a;
-	*head_a = node_to_pop;
-	(*head_a)->next = temp;
-	temp->prev = *head_a;
-	ft_update_pos(head_a);
-	ft_update_pos(head_b);
-	ft_printf("pa\n");
+    t_stack_node *node_to_pop = ft_pop(head_b);
+
+    if (*head_a == NULL) {
+        *head_a = node_to_pop;
+        (*head_a)->prev = NULL;
+        (*head_a)->next = NULL;
+    } else {
+        t_stack_node *temp = *head_a;
+        *head_a = node_to_pop;
+        (*head_a)->next = temp;
+        temp->prev = *head_a;
+    }
+
+    ft_update_pos(head_a);
+    ft_printf("pa\n");
 }
 
 void	ft_pb(t_stack_node **head_a, t_stack_node **head_b)
@@ -154,20 +162,25 @@ void	ft_pb(t_stack_node **head_a, t_stack_node **head_b)
 	ft_printf("pb\n");
 }
 
-t_stack_node	*ft_pop(t_stack_node **head) //need to free node_to_pop
+t_stack_node	*ft_pop(t_stack_node **head)
 {
-	t_stack_node *node_to_pop;
+	t_stack_node *node_to_pop = *head;
 
-	if (*head == NULL)
-		return (NULL);
-	node_to_pop = *head;
-	if (node_to_pop->next)
-		*head = node_to_pop->next;
-	(*head)->prev = NULL;
-	node_to_pop->next = NULL;
-	node_to_pop->prev = NULL;
-	ft_update_pos(head);
-	return (node_to_pop);
+    if (*head == NULL)
+        return NULL; // Nothing to pop
+
+    if (node_to_pop->next) {
+        *head = node_to_pop->next;
+        (*head)->prev = NULL;
+    } else {
+        *head = NULL; // The stack is empty after popping
+    }
+
+    node_to_pop->next = NULL;
+    node_to_pop->prev = NULL;
+    ft_update_pos(head);
+
+    return node_to_pop;
 }
 
 void	ft_update_pos(t_stack_node **head_a)
@@ -177,7 +190,7 @@ void	ft_update_pos(t_stack_node **head_a)
 
 	current = *head_a;
 	pos = 0;
-	while (current != NULL)
+	while (current)
 	{
 		current->position = pos++;
 		current = current->next;
@@ -210,7 +223,7 @@ int	main(int argc, char **argv)
 	ft_print_stack(head_a);
 	ft_printf("stack b\n");
 	ft_print_stack(head_b);
-	ft_free_stack(head_a);
-	ft_free_stack(head_b);
+	ft_free_stack(&head_a);
+	ft_free_stack(&head_b);
 	return (0);
 }

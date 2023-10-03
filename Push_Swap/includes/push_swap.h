@@ -11,7 +11,7 @@ typedef struct s_stack_node {
 } t_stack_node;
 
 void			ft_print_stack(t_stack_node *head);
-void			ft_free_stack(t_stack_node *head);
+void			ft_free_stack(t_stack_node **head);
 void			ft_fill_stack_a(t_stack_node **head_a, char **str);
 void			ft_swap(t_stack_node **head);
 void			ft_sa(t_stack_node **head_a);

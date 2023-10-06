@@ -31,5 +31,6 @@ void			ft_rotate_down(t_stack_node **head);
 void			ft_rra(t_stack_node **head_a);
 void			ft_rrb(t_stack_node **head_b);
 void			ft_rrr(t_stack_node **head_a, t_stack_node **head_b);
+int				ft_check_order(t_stack_node *head);
 
 #endif

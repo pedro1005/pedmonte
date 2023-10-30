@@ -148,10 +148,51 @@ int	ft_get_min_pos(t_stack_node *head)
 	return (pos);
 }
 
+int	ft_get_max_pos(t_stack_node *head)
+{
+	t_stack_node	*current;
+	int				max;
+	int				pos;
+
+	current = head;
+	max = head->value;
+	pos = head->position;
+	while (current)
+	{
+		if (current->value > max)
+		{
+			max = current->value;
+			pos = current->position;
+		}
+		if (!current->next)
+			break ;
+		current = current->next;
+	}
+	return (pos);
+}
+
+int		ft_choose_pos(int len, int pos_max, int pos_min)
+{
+	int	dist_min = pos_min;
+	int dist_max = pos_max;
+	
+	if (pos_max == pos_min)
+		return (pos_max);
+	if (pos_min > (len - pos_min + 1))
+		dist_min = len - pos_min + 1;
+	if (pos_max > (len - pos_max + 1))
+		dist_max = len - pos_max + 1;
+	if (dist_min < dist_max)
+		return (pos_min);
+	return (pos_max);
+}
+
 void	ft_order(t_stack_node **head_a, t_stack_node **head_b)
 {
 	int		len;
-	int 	pos;
+	int 	pos_min;
+	int		pos_max;
+	int		pos;
 	int		max;
 
 	while (!ft_check_order(*head_a))
@@ -159,60 +200,47 @@ void	ft_order(t_stack_node **head_a, t_stack_node **head_b)
 		while (*head_a)
 		{
 			len = ft_lstlen(*head_a);
-			pos = ft_get_min_pos(*head_a);
+			pos_min = ft_get_min_pos(*head_a);
+			pos_max = ft_get_max_pos(*head_a);
 			max = ft_get_max(*head_a);
+			pos = ft_choose_pos(len, pos_max, pos_min);
 			
 			if (pos <= (len/2 + 0.5))
 			{
 				while (pos > 0)
 				{
-					if ((*head_a)->value == max || (*head_a)->value == ft_get_2ndmax(*head_a))
-					{
-						ft_pb(head_a, head_b);
-						ft_rb(head_b);
-						pos--;
-						max = ft_get_max(*head_a);
-					}
-					else if ((*head_a)->value == ft_get_2ndmin(*head_a))
-					{
-						ft_pb(head_a, head_b);
-						pos--;
-						max = ft_get_max(*head_a);
-					}
 					ft_ra(head_a);
-					pos = ft_get_min_pos(*head_a);
+					pos--;
 				}
 			}
 			else
 			{
 				while (pos < len)
 				{
-					if ((*head_a)->value == max || (*head_a)->value == ft_get_2ndmax(*head_a))
-						{
-							ft_pb(head_a, head_b);
-							ft_rb(head_b);
-						}
-					else if ((*head_a)->value == ft_get_2ndmin(*head_a))
-						{
-							ft_pb(head_a, head_b);
-						}
 					ft_rra(head_a);
 					pos++;
 				}
 			}
-			ft_pb(head_a, head_b);
+			if ((*head_a)->value == max)
+			{
+				ft_pb(head_a, head_b);
+				ft_rb(head_b);
+			}
+			else
+				ft_pb(head_a, head_b);
 		}
 		max = ft_get_max(*head_b);
-		while ((*head_b)->value != max || (*head_b)->value != ft_get_2ndmax(*head_b)) // FIX THIS!!!
+		while ((*head_b)->value != max)
 		{
-			if(((*head_b)->value) < ((*head_b)->next->value))
-				ft_sb(head_b);
 			ft_pa(head_a, head_b);
 		}
 		while (*head_b)
 		{
-			if(((*head_b)->value) < ((*head_b)->next->value))
-				ft_sb(head_b);
+			if((*head_b)->next)
+			{
+				if(((*head_b)->value) < ((*head_b)->next->value))
+					ft_sb(head_b);
+			}
 			ft_rrb(head_b);
 			ft_pa(head_a, head_b);
 			ft_ra(head_a);			

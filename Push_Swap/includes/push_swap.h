@@ -39,5 +39,6 @@ int				ft_get_min_pos(t_stack_node *head);
 int				ft_get_2ndmax(t_stack_node *head);
 int				ft_get_min(t_stack_node *head);
 int				ft_get_2ndmin(t_stack_node *head);
+int				ft_get_max_pos(t_stack_node *head);
 
 #endif

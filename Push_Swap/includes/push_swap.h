@@ -2,10 +2,13 @@
 # define PUSH_SWAP__H
 
 #include "../libft/libft.h"
+#include <limits.h>
 
 typedef struct s_stack_node {
 	int					value;
 	int					position;
+	int					index;
+	int					cost;
 	struct s_stack_node *next;
 	struct s_stack_node *prev;
 } t_stack_node;
@@ -40,5 +43,7 @@ int				ft_get_2ndmax(t_stack_node *head);
 int				ft_get_min(t_stack_node *head);
 int				ft_get_2ndmin(t_stack_node *head);
 int				ft_get_max_pos(t_stack_node *head);
+void			ft_set_index(t_stack_node **head,  int stack_size);
+void			ft_leave_two(t_stack_node **head_a, t_stack_node **head_b);
 
 #endif

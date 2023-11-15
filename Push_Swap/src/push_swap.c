@@ -187,13 +187,73 @@ int		ft_choose_pos(int len, int pos_max, int pos_min)
 	return (pos_max);
 }
 
+void	ft_leave_two(t_stack_node **head_a, t_stack_node **head_b)
+{
+	int	size;
+
+	size = ft_lstlen(*head_a);
+	while (ft_lstlen(*head_a) > 2)
+	{
+		if ((*head_a)->index > (size / 2))
+		{
+			ft_pb(head_a, head_b);
+			ft_rb(head_b);
+		}
+		else
+			ft_pb(head_a, head_b);
+	}
+}
+
+void	ft_set_cost(t_stack_node **head_a, t_stack_node **head_b)
+{
+	t_stack_node	*current_a;
+	t_stack_node	*current_b;
+	int				cost_a;
+	int				cost_b;
+
+	cost_a = INT_MAX;
+	cost_b = INT_MAX;
+	current_a = *head_a;
+	current_b = *head_b;
+	while (current_b)
+	{
+		current.
+	}
+
+}
+
+t_stack_node	*ft_get_target(t_stack_node *head)
+{
+	t_stack_node	*target;
+	t_stack_node	*current;
+
+	target = head;
+	current = head;
+	while (current)
+	{
+		if (current->cost < target->cost)
+			target = current;
+		if (!current->next)
+			return (target);
+		current = current->next;
+	}
+	return (target);
+}
+
 void	ft_order(t_stack_node **head_a, t_stack_node **head_b)
 {
-	int		len;
+	t_stack_node	*target;
+
+	ft_leave_two(head_a, head_b);
+	ft_set_cost(head_a, head_b);
+	target = ft_get_target(&head_b);
+	/*int		len;
 	int 	pos_min;
 	int		pos_max;
 	int		pos;
 	int		max;
+
+
 
 	while (!ft_check_order(*head_a))
 	{
@@ -245,7 +305,38 @@ void	ft_order(t_stack_node **head_a, t_stack_node **head_b)
 			ft_pa(head_a, head_b);
 			ft_ra(head_a);			
 		}
-	}
+	}*/
+}
+
+void	ft_set_index(t_stack_node **head,  int stack_size)
+{
+	t_stack_node *ptr;
+    t_stack_node *highest;
+    int value;
+
+    while (--stack_size > 0)
+    {
+        ptr = *head;
+        value = INT_MIN;
+        highest = NULL;
+
+        while (ptr)
+        {
+            if (ptr->value == INT_MIN && ptr->index == 0)
+                ptr->index = 1;
+
+            if (ptr->value > value && ptr->index == 0)
+            {
+                value = ptr->value;
+                highest = ptr;
+            }
+
+            ptr = ptr->next;
+        }
+
+        if (highest != NULL)
+            highest->index = stack_size;
+    }
 }
 
 int	main(int argc, char **argv)
@@ -258,6 +349,9 @@ int	main(int argc, char **argv)
 	ft_check_errors(argc); // incomplete!!
 	ft_fill_stack_a(&head_a, argv);
 	ft_order(&head_a, &head_b);
+	ft_set_index(&head_a, ft_lstlen(head_a));
+	ft_order(&head_a, &head_b);
+	//ft_print_stack(head_a);
 	if (ft_check_order(head_a))
 		printf("Lista Ordenada\n");
 	else

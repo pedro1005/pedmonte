@@ -18,7 +18,8 @@ void	ft_print_stack(t_stack_node *head)
 	current = head;
 	while (current)
 	{
-		ft_printf("node pos: %d || value: %d || adr: %p || prev: %p || next: %p\n", current->position, current->value, current,  current->prev, current->next);
+		//ft_printf("node pos: %d || value: %d || adr: %p || prev: %p || next: %p\n", current->position, current->value, current,  current->prev, current->next);
+		printf("value: %d || index: %d\n", current->value, current->index);
 		if (current->next)
 			current = current->next;
 		else
@@ -54,6 +55,8 @@ void	ft_fill_stack_a(t_stack_node **head_a, char **str)
 		new_node->next = NULL;
 		new_node->prev = NULL;
 		new_node->position = pos++;
+		new_node->index = 0;
+		new_node->cost = INT_MAX;
 		if (*head_a == NULL)
 			*head_a = new_node;
 		else
